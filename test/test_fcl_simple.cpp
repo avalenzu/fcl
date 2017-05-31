@@ -117,9 +117,9 @@ void test_Vec_nf_test()
     std::cout << sampler.sample().transpose() << std::endl;
 
   // Disabled broken test lines. Please see #25.
-  // SamplerSE2 sampler2(0, 1, -1, 1);
-  // for(std::size_t i = 0; i < 10; ++i)
-  //   std::cout << sampler2.sample() << std::endl;
+   SamplerSE2<S> sampler2(0, 1, -1, 1);
+   for(std::size_t i = 0; i < 10; ++i)
+     std::cout << sampler2.sample() << std::endl;
 
   SamplerSE3Euler<S> sampler3(Vector3<S>(0, 0, 0), Vector3<S>(1, 1, 1));
   for(std::size_t i = 0; i < 10; ++i)
