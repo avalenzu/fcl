@@ -116,10 +116,9 @@ void test_front_list()
 
   for(std::size_t i = 0; i < transforms.size(); ++i)
   {
-    // Disabled broken test lines. Please see #25.
-    // res = collide_Test<RSS<S>>(transforms2[i], p1, t1, p2, t2, detail::SPLIT_METHOD_MEDIAN, verbose);
-    // res2 = collide_front_list_Test<RSS<S>>(transforms[i], transforms2[i], p1, t1, p2, t2, detail::SPLIT_METHOD_MEDIAN, false, verbose);
-    // EXPECT_TRUE(res == res2);
+    res = collide_Test<RSS<S>>(transforms2[i], p1, t1, p2, t2, detail::SPLIT_METHOD_MEDIAN, verbose);
+    res2 = collide_front_list_Test<RSS<S>>(transforms[i], transforms2[i], p1, t1, p2, t2, detail::SPLIT_METHOD_MEDIAN, false, verbose);
+    EXPECT_TRUE(res == res2);
     res = collide_Test<RSS<S>>(transforms2[i], p1, t1, p2, t2, detail::SPLIT_METHOD_MEAN, verbose);
     res2 = collide_front_list_Test<RSS<S>>(transforms[i], transforms2[i], p1, t1, p2, t2, detail::SPLIT_METHOD_MEAN, false, verbose);
     EXPECT_TRUE(res == res2);
