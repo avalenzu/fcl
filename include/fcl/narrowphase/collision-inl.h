@@ -154,11 +154,13 @@ std::size_t collide(const CollisionObject<S>* o1, const CollisionObject<S>* o2,
   case GST_LIBCCD:
     {
       detail::GJKSolver_libccd<S> solver;
+      solver.collision_tolerance = request.collision_tolerance;
       return collide(o1, o2, &solver, request, result);
     }
   case GST_INDEP:
     {
       detail::GJKSolver_indep<S> solver;
+      solver.epa_tolerance = request.collision_tolerance;
       return collide(o1, o2, &solver, request, result);
     }
   default:
