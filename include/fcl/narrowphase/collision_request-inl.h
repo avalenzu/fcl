@@ -57,13 +57,15 @@ CollisionRequest<S>::CollisionRequest(
     size_t num_max_cost_sources_,
     bool enable_cost_,
     bool use_approximate_cost_,
-    GJKSolverType gjk_solver_type_)
+    GJKSolverType gjk_solver_type_,
+    S collision_tolerance_)
   : num_max_contacts(num_max_contacts_),
     enable_contact(enable_contact_),
     num_max_cost_sources(num_max_cost_sources_),
     enable_cost(enable_cost_),
     use_approximate_cost(use_approximate_cost_),
     gjk_solver_type(gjk_solver_type_),
+    collision_tolerance(collision_tolerance_),
     enable_cached_gjk_guess(false),
     cached_gjk_guess(Vector3<S>::UnitX())
 {
