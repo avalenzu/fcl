@@ -80,9 +80,12 @@ struct CollisionRequest
                    size_t num_max_cost_sources_ = 1,
                    bool enable_cost_ = false,
                    bool use_approximate_cost_ = true,
-                   GJKSolverType gjk_solver_type_ = GST_LIBCCD);
+                   GJKSolverType gjk_solver_type_ = GST_LIBCCD,
+                   S collision_tolerance_ = 1e-6);
 
   bool isSatisfied(const CollisionResult<S>& result) const;
+
+  S collision_tolerance;
 };
 
 using CollisionRequestf = CollisionRequest<float>;
