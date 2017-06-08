@@ -238,7 +238,7 @@ bool GJKSolver_libccd<S>::shapeIntersect(
   FCL_GJK_LIBCCD_SHAPE_SHAPE_INTERSECT_INV(SHAPE1, SHAPE2, ALG)
 
 FCL_GJK_LIBCCD_SHAPE_INTERSECT(Sphere, detail::sphereSphereIntersect)
-FCL_GJK_LIBCCD_SHAPE_INTERSECT(Box, detail::boxBoxIntersect)
+//FCL_GJK_LIBCCD_SHAPE_INTERSECT(Box, detail::boxBoxIntersect)
 
 FCL_GJK_LIBCCD_SHAPE_SHAPE_INTERSECT(Sphere, Capsule, detail::sphereCapsuleIntersect)
 
