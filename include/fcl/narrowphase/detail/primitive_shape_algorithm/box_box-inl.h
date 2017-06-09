@@ -1244,6 +1244,7 @@ int boxBox2(
     center = Tb->translation() - Ta->translation() + Tb->linear().col(lanr) * ((*Sb)[lanr]);
   else
     center = Tb->translation() - Ta->translation() - Tb->linear().col(lanr) * ((*Sb)[lanr]);
+  center = Ta->inverse()*center;
 
   // find the normal and non-normal axis numbers of the reference box
   int codeN, code1, code2;
