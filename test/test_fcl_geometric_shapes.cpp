@@ -795,6 +795,141 @@ void test_shapeIntersection_boxbox()
 #endif
 }
 
+template <typename S>
+void testBoxBoxContacts(fcl::Vector3<S> size1,
+                        fcl::Transform3<S> tf1,
+                        fcl::Vector3<S> size2, 
+                        fcl::Transform3<S> tf2,
+                        std::vector<fcl::ContactPoint<S>> expected_contacts,
+                        fcl::GJKSolverType solver_type, S test_tolerance)
+{
+  Box<S> box1{size1};
+  Box<S> box2{size2};
+
+  // Enable computation of nearest points
+  fcl::CollisionRequest<S> collisionRequest (true);
+  fcl::CollisionResult<S> collisionResult;
+
+  collisionRequest.gjk_solver_type = solver_type;
+  collisionRequest.enable_contact = true;
+
+  // test intersection
+  std::vector<fcl::ContactPoint<S>> actual_contacts;
+  bool res{solver1<S>().shapeIntersect(box1, tf1, box2, tf2, &actual_contacts)};
+  EXPECT_TRUE(res);
+
+  bool check_position{true};
+  bool check_depth{true};
+  bool check_normal{true};
+  bool check_opposite_normal{false};
+  EXPECT_TRUE(inspectContactPointds(box1, tf1, box2, tf2, solver_type,
+        expected_contacts, actual_contacts,
+        check_position,
+        check_depth,
+        check_normal, check_opposite_normal,
+        test_tolerance));
+}
+
+GTEST_TEST(FCL_GEOMETRIC_SHAPES, boxbox_point_face)
+{
+
+  fcl::Vector3d size1{1.0, 1.0, 1.0};
+  fcl::Vector3d size2{1.0, 1.0, 1.0};
+
+  fcl::Transform3d tf1{fcl::Transform3d::Identity()};
+  fcl::Transform3d tf2{fcl::AngleAxisd(std::atan2(M_SQRT1_2, 0.5), fcl::Vector3d(M_SQRT1_2, M_SQRT1_2, 0))};
+  tf2.translation() = fcl::Vector3d(0.0, 0.0, 0.5 + 0.5 * std::sqrt(3));
+
+  std::vector<fcl::ContactPointd> contacts;
+  contacts.resize(1);
+  contacts[0].pos = fcl::Vector3d(0.0, 0.0, 0.5);
+  contacts[0].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].penetration_depth = 0.0;
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+
+  tf2.translation() = fcl::Vector3d(0.0, 0.0, 0.5 + 0.5 * std::sqrt(3) - 0.1);
+  contacts.resize(1);
+  contacts[0].pos = fcl::Vector3d(0.0, 0.0, 0.40);
+  contacts[0].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].penetration_depth = -0.1;
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+}
+
+GTEST_TEST(FCL_GEOMETRIC_SHAPES, boxbox_face_face)
+{
+
+  fcl::Vector3d size1{1.0, 1.0, 1.0};
+  fcl::Vector3d size2{1.0, 1.0, 1.0};
+
+  fcl::Transform3d tf1{fcl::Transform3d::Identity()};
+  tf1.translation() = fcl::Vector3d(0.0, 0.0, 0.5);
+  fcl::Transform3d tf2{fcl::Transform3d::Identity()};
+  tf2.translation() = fcl::Vector3d(0.0, 0.0, 1.5);
+
+  std::vector<fcl::ContactPointd> contacts;
+  contacts.resize(4);
+  contacts[0].pos = fcl::Vector3d(-0.5, -0.5, 1.0);
+  contacts[0].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].penetration_depth = 0.0;
+  contacts[1].pos = fcl::Vector3d(0.5, -0.5, 1.0);
+  contacts[1].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[1].penetration_depth = 0.0;
+  contacts[2].pos = fcl::Vector3d(-0.5, 0.5, 1.0);
+  contacts[2].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[2].penetration_depth = 0.0;
+  contacts[3].pos = fcl::Vector3d(0.5, 0.5, 1.0);
+  contacts[3].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[3].penetration_depth = 0.0;
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+
+}
+
+GTEST_TEST(FCL_GEOMETRIC_SHAPES, boxbox_edge_face)
+{
+  fcl::Vector3d size1{1.0, 1.0, 1.0};
+  fcl::Vector3d size2{1.0, 1.0, 1.0};
+
+  Transform3d transform = Transform3d::Identity();
+  test::generateRandomTransform(extents<double>(), transform);
+
+  fcl::Transform3d tf1{transform};
+  tf1.translation() = transform*fcl::Vector3d(0.0, 0.0, 0.5);
+  fcl::Transform3d tf2{transform};
+  tf2.rotate(fcl::AngleAxisd(M_PI_4, fcl::Vector3d(1, 0, 0)));
+  tf2.translation() = transform*fcl::Vector3d(0.0, -0.5*M_SQRT1_2, 1 + 0.5*M_SQRT1_2);
+
+  std::vector<fcl::ContactPointd> contacts;
+  contacts.resize(2);
+  contacts[0].pos = transform*fcl::Vector3d(-0.5, -0.5*M_SQRT1_2, 1.0 - 0.5*M_SQRT1_2);
+  contacts[0].normal = transform.linear() * fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].penetration_depth = -0.5*M_SQRT1_2;
+  contacts[1].pos = transform*fcl::Vector3d(0.5, -0.5*M_SQRT1_2,  1.0 - 0.5*M_SQRT1_2);
+  contacts[1].normal = transform.linear() * fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[1].penetration_depth = -0.5*M_SQRT1_2;
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+
+  tf2 = transform;
+  double theta{0.5*M_PI_4};
+  double sin_theta{std::sin(theta)};
+  double cos_theta{std::cos(theta)};
+  tf2.rotate(fcl::AngleAxisd(theta, fcl::Vector3d(1, 0, 0)));
+  tf2.translation() = transform * fcl::Vector3d(0.0, -0.5*sin_theta, 1 + 0.5*cos_theta);
+
+  contacts.resize(2);
+  contacts[0].pos = transform * fcl::Vector3d(-0.5, -0.5*cos_theta, 1.0 - 0.5*sin_theta);
+  contacts[0].normal = transform.linear() * fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].penetration_depth = -0.5*sin_theta;
+  contacts[1].pos = transform * fcl::Vector3d(0.5, -0.5*cos_theta, 1.0 - 0.5*sin_theta);
+  contacts[1].normal = transform.linear() * fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[1].penetration_depth = -0.5*sin_theta;
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+}
+
 GTEST_TEST(FCL_GEOMETRIC_SHAPES, shapeIntersection_boxbox)
 {
 //  test_shapeIntersection_boxbox<float>();
