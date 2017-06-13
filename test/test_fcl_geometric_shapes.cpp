@@ -912,14 +912,34 @@ GTEST_TEST(FCL_GEOMETRIC_SHAPES, boxbox_face_face)
   double side_half_width{0.5/(M_SQRT2 + 1)};
   contacts.resize(8);
   auto contacts_end = contacts.end();
-  contacts[0].pos = fcl::Vector3d(-0.5, -side_half_width, 1.0);
-  contacts[1].pos = fcl::Vector3d(-side_half_width, -0.5, 1.0);
-  contacts[2].pos = fcl::Vector3d(side_half_width, -0.5, 1.0);
-  contacts[3].pos = fcl::Vector3d(0.5, -side_half_width, 1.0);
-  contacts[4].pos = fcl::Vector3d(0.5, side_half_width, 1.0);
-  contacts[5].pos = fcl::Vector3d(side_half_width, 0.5, 1.0);
-  contacts[6].pos = fcl::Vector3d(-side_half_width, 0.5, 1.0);
-  contacts[7].pos = fcl::Vector3d(-0.5, side_half_width, 1.0);
+  contacts[0].pos = fcl::Vector3d(-0.5,             -side_half_width, 1.0);
+  contacts[1].pos = fcl::Vector3d(-side_half_width, -0.5,             1.0);
+  contacts[2].pos = fcl::Vector3d(side_half_width,  -0.5,             1.0);
+  contacts[3].pos = fcl::Vector3d(0.5,              -side_half_width, 1.0);
+  contacts[4].pos = fcl::Vector3d(0.5,               side_half_width, 1.0);
+  contacts[5].pos = fcl::Vector3d(side_half_width,   0.5,             1.0);
+  contacts[6].pos = fcl::Vector3d(-side_half_width,  0.5,             1.0);
+  contacts[7].pos = fcl::Vector3d(-0.5,              side_half_width, 1.0);
+  for (auto iter = contacts.begin(); iter != contacts_end; ++iter) {
+    iter->pos = transform*iter->pos;
+    iter->normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
+    iter->penetration_depth = 0.0;
+  }
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+  // Rotated by 45ْ  about z-axis and translated
+  // Contact patch is a pentagon
+  tf2 = transform;
+  tf2.rotate(fcl::AngleAxisd(M_PI_4, fcl::Vector3d(0, 0, 1)));
+  tf2.translation() = transform*fcl::Vector3d(side_half_width+5e-9, 
+                                              side_half_width+5e-9, 1.5);
+  contacts.resize(5);
+  contacts[0].pos = fcl::Vector3d(side_half_width,  -0.5,             1.0);
+  contacts[1].pos = fcl::Vector3d(0.5,              -side_half_width, 1.0);
+  contacts[2].pos = fcl::Vector3d(0.5,               0.5,             1.0);
+  contacts[3].pos = fcl::Vector3d(-side_half_width,  0.5,             1.0);
+  contacts[4].pos = fcl::Vector3d(-0.5,              side_half_width, 1.0);
+  contacts_end = contacts.end();
   for (auto iter = contacts.begin(); iter != contacts_end; ++iter) {
     iter->pos = transform*iter->pos;
     iter->normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
