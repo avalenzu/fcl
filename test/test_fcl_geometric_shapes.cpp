@@ -863,28 +863,70 @@ GTEST_TEST(FCL_GEOMETRIC_SHAPES, boxbox_face_face)
   fcl::Vector3d size1{1.0, 1.0, 1.0};
   fcl::Vector3d size2{1.0, 1.0, 1.0};
 
-  fcl::Transform3d tf1{fcl::Transform3d::Identity()};
-  tf1.translation() = fcl::Vector3d(0.0, 0.0, 0.5);
-  fcl::Transform3d tf2{fcl::Transform3d::Identity()};
-  tf2.translation() = fcl::Vector3d(0.0, 0.0, 1.5);
+  Transform3d transform{Transform3d::Identity()};
+  //test::generateRandomTransform(extents<double>(), transform);
+
+  fcl::Transform3d tf1{transform};
+  tf1.translation() = transform*fcl::Vector3d(0.0, 0.0, 0.5);
+  fcl::Transform3d tf2{transform};
+  tf2.translation() = transform*fcl::Vector3d(0.0, 0.0, 1.5);
 
   std::vector<fcl::ContactPointd> contacts;
   contacts.resize(4);
-  contacts[0].pos = fcl::Vector3d(-0.5, -0.5, 1.0);
-  contacts[0].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].pos = transform*fcl::Vector3d(-0.5, -0.5, 1.0);
+  contacts[0].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
   contacts[0].penetration_depth = 0.0;
-  contacts[1].pos = fcl::Vector3d(0.5, -0.5, 1.0);
-  contacts[1].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[1].pos = transform*fcl::Vector3d(0.5, -0.5, 1.0);
+  contacts[1].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
   contacts[1].penetration_depth = 0.0;
-  contacts[2].pos = fcl::Vector3d(-0.5, 0.5, 1.0);
-  contacts[2].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[2].pos = transform*fcl::Vector3d(-0.5, 0.5, 1.0);
+  contacts[2].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
   contacts[2].penetration_depth = 0.0;
-  contacts[3].pos = fcl::Vector3d(0.5, 0.5, 1.0);
-  contacts[3].normal = fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[3].pos = transform*fcl::Vector3d(0.5, 0.5, 1.0);
+  contacts[3].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
   contacts[3].penetration_depth = 0.0;
   testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
                              fcl::GST_LIBCCD, 1e-8);
 
+  tf2.translation() = transform*fcl::Vector3d(0.5, 0.5, 1.5);
+
+  contacts[0].pos = transform*fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[0].penetration_depth = 0.0;
+  contacts[1].pos = transform*fcl::Vector3d(0.5, 0.0, 1.0);
+  contacts[1].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[1].penetration_depth = 0.0;
+  contacts[2].pos = transform*fcl::Vector3d(0.0, 0.5, 1.0);
+  contacts[2].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[2].penetration_depth = 0.0;
+  contacts[3].pos = transform*fcl::Vector3d(0.5, 0.5, 1.0);
+  contacts[3].normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
+  contacts[3].penetration_depth = 0.0;
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
+
+  // Rotated by 45ْ  about z-axis
+  // Contact patch is an octogon with sides of length 1/(1 + √2)
+  tf2.translation() = transform*fcl::Vector3d(0.0, 0.0, 1.5);
+  tf2.rotate(fcl::AngleAxisd(M_PI_4, fcl::Vector3d(0, 0, 1)));
+  double side_half_width{0.5/(M_SQRT2 + 1)};
+  contacts.resize(8);
+  auto contacts_end = contacts.end();
+  contacts[0].pos = fcl::Vector3d(-0.5, -side_half_width, 1.0);
+  contacts[1].pos = fcl::Vector3d(-side_half_width, -0.5, 1.0);
+  contacts[2].pos = fcl::Vector3d(side_half_width, -0.5, 1.0);
+  contacts[3].pos = fcl::Vector3d(0.5, -side_half_width, 1.0);
+  contacts[4].pos = fcl::Vector3d(0.5, side_half_width, 1.0);
+  contacts[5].pos = fcl::Vector3d(side_half_width, 0.5, 1.0);
+  contacts[6].pos = fcl::Vector3d(-side_half_width, 0.5, 1.0);
+  contacts[7].pos = fcl::Vector3d(-0.5, side_half_width, 1.0);
+  for (auto iter = contacts.begin(); iter != contacts_end; ++iter) {
+    iter->pos = transform*iter->pos;
+    iter->normal = transform.linear()*fcl::Vector3d(0.0, 0.0, 1.0);
+    iter->penetration_depth = 0.0;
+  }
+  testBoxBoxContacts<double>(size1, tf1, size2, tf2, contacts,
+                             fcl::GST_LIBCCD, 1e-8);
 }
 
 GTEST_TEST(FCL_GEOMETRIC_SHAPES, boxbox_edge_face)
