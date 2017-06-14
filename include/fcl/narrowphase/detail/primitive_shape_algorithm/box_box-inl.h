@@ -258,7 +258,7 @@ int boxBox2(
     int maxc,
     std::vector<ContactPoint<S>>& contacts)
 {
-  const S fudge_factor = S(1.05);
+  const S fudge_factor = S(1.0 + 1e-12);
   Vector3<S> normalC;
   S s, s2, l;
   int invert_normal, code;
@@ -296,7 +296,12 @@ int boxBox2(
   // separating axis = u1, u2, u3
   tmp = pp[0];
   s2 = std::abs(tmp) - (Q.row(0).dot(B) + A[0]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  //END_DEBUG
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 302" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -308,7 +313,11 @@ int boxBox2(
 
   tmp = pp[1];
   s2 = std::abs(tmp) - (Q.row(1).dot(B) + A[1]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 318" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -320,7 +329,11 @@ int boxBox2(
 
   tmp = pp[2];
   s2 = std::abs(tmp) - (Q.row(2).dot(B) + A[2]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 334" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -333,7 +346,11 @@ int boxBox2(
   // separating axis = v1, v2, v3
   tmp = R2.col(0).dot(p);
   s2 = std::abs(tmp) - (Q.col(0).dot(A) + B[0]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 351" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -345,7 +362,11 @@ int boxBox2(
 
   tmp = R2.col(1).dot(p);
   s2 = std::abs(tmp) - (Q.col(1).dot(A) + B[1]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 367" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -357,7 +378,11 @@ int boxBox2(
 
   tmp = R2.col(2).dot(p);
   s2 =  std::abs(tmp) - (Q.col(2).dot(A) + B[2]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 383" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -367,8 +392,7 @@ int boxBox2(
     code = 6;
   }
 
-
-  S fudge2(1.0e-6);
+  S fudge2(1.0e-12);
   Q.array() += fudge2;
 
   Vector3<S> n;
@@ -377,7 +401,11 @@ int boxBox2(
   // separating axis = u1 x (v1,v2,v3)
   tmp = pp[2] * R(1, 0) - pp[1] * R(2, 0);
   s2 = std::abs(tmp) - (A[1] * Q(2, 0) + A[2] * Q(1, 0) + B[1] * Q(0, 2) + B[2] * Q(0, 1));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 406" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(0, -R(2, 0), R(1, 0));
   l = n.norm();
   if(l > eps)
@@ -395,7 +423,11 @@ int boxBox2(
 
   tmp = pp[2] * R(1, 1) - pp[1] * R(2, 1);
   s2 = std::abs(tmp) - (A[1] * Q(2, 1) + A[2] * Q(1, 1) + B[0] * Q(0, 2) + B[2] * Q(0, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 428" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(0, -R(2, 1), R(1, 1));
   l = n.norm();
   if(l > eps)
@@ -413,7 +445,11 @@ int boxBox2(
 
   tmp = pp[2] * R(1, 2) - pp[1] * R(2, 2);
   s2 = std::abs(tmp) - (A[1] * Q(2, 2) + A[2] * Q(1, 2) + B[0] * Q(0, 1) + B[1] * Q(0, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 450" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(0, -R(2, 2), R(1, 2));
   l = n.norm();
   if(l > eps)
@@ -432,7 +468,11 @@ int boxBox2(
   // separating axis = u2 x (v1,v2,v3)
   tmp = pp[0] * R(2, 0) - pp[2] * R(0, 0);
   s2 = std::abs(tmp) - (A[0] * Q(2, 0) + A[2] * Q(0, 0) + B[1] * Q(1, 2) + B[2] * Q(1, 1));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 473" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(R(2, 0), 0, -R(0, 0));
   l = n.norm();
   if(l > eps)
@@ -450,7 +490,11 @@ int boxBox2(
 
   tmp = pp[0] * R(2, 1) - pp[2] * R(0, 1);
   s2 = std::abs(tmp) - (A[0] * Q(2, 1) + A[2] * Q(0, 1) + B[0] * Q(1, 2) + B[2] * Q(1, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 495" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(R(2, 1), 0, -R(0, 1));
   l = n.norm();
   if(l > eps)
@@ -468,7 +512,11 @@ int boxBox2(
 
   tmp = pp[0] * R(2, 2) - pp[2] * R(0, 2);
   s2 = std::abs(tmp) - (A[0] * Q(2, 2) + A[2] * Q(0, 2) + B[0] * Q(1, 1) + B[1] * Q(1, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 517" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(R(2, 2), 0, -R(0, 2));
   l = n.norm();
   if(l > eps)
@@ -487,7 +535,11 @@ int boxBox2(
   // separating axis = u3 x (v1,v2,v3)
   tmp = pp[1] * R(0, 0) - pp[0] * R(1, 0);
   s2 = std::abs(tmp) - (A[0] * Q(1, 0) + A[1] * Q(0, 0) + B[1] * Q(2, 2) + B[2] * Q(2, 1));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 540" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(-R(1, 0), R(0, 0), 0);
   l = n.norm();
   if(l > eps)
@@ -505,7 +557,11 @@ int boxBox2(
 
   tmp = pp[1] * R(0, 1) - pp[0] * R(1, 1);
   s2 = std::abs(tmp) - (A[0] * Q(1, 1) + A[1] * Q(0, 1) + B[0] * Q(2, 2) + B[2] * Q(2, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 562" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(-R(1, 1), R(0, 1), 0);
   l = n.norm();
   if(l > eps)
@@ -523,7 +579,11 @@ int boxBox2(
 
   tmp = pp[1] * R(0, 2) - pp[0] * R(1, 2);
   s2 = std::abs(tmp) - (A[0] * Q(1, 2) + A[1] * Q(0, 2) + B[0] * Q(2, 1) + B[1] * Q(2, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 584" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(-R(1, 2), R(0, 2), 0);
   l = n.norm();
   if(l > eps)
@@ -541,7 +601,11 @@ int boxBox2(
 
 
 
-  if (!code) { *return_code = code; return 0; }
+  if (!code) { *return_code = code;
+ //DEBUG
+ std::cout << "box_box-inl.h: 606" << std::endl;
+ //END_DEBUG
+ return 0; }
 
   // if we get to this point, the boxes interpenetrate. compute the normal
   // in global coordinates.
@@ -593,6 +657,10 @@ int boxBox2(
     contacts.emplace_back(normal, pb, -*depth);
     *return_code = code;
 
+
+    //DEBUG
+    std::cout << "box_box-inl.h: 662" << std::endl;
+    //END_DEBUG
     return 1;
   }
 
@@ -735,7 +803,11 @@ int boxBox2(
   // intersect the incident and reference faces
   S ret[16];
   int n_intersect = intersectRectQuad2(rect, quad, ret);
-  if(n_intersect < 1) { *return_code = code; return 0; } // this should never happen
+  if(n_intersect < 1) { *return_code = code;
+ //DEBUG
+ std::cout << "box_box-inl.h: 808" << std::endl;
+ //END_DEBUG
+ return 0; } // this should never happen
 
   // convert the intersection points into reference-face coordinates,
   // and compute the contact position and depth for each point. only keep
@@ -762,7 +834,11 @@ int boxBox2(
       cnum++;
     }
   }
-  if(cnum < 1) { *return_code = code; return 0; } // this should never happen
+  if(cnum < 1) { *return_code = code;
+ //DEBUG
+ std::cout << "box_box-inl.h: 839" << std::endl;
+ //END_DEBUG
+ return 0; } // this should never happen
 
   // we can't generate more contacts than we actually have
   if(maxc > cnum) maxc = cnum;
@@ -819,6 +895,10 @@ int boxBox2(
   }
 
   *return_code = code;
+
+  //DEBUG
+  std::cout << "box_box-inl.h: 900" << std::endl;
+  //END_DEBUG
   return cnum;
 }
 
@@ -848,6 +928,16 @@ int boxBox2(
   // Rij is R1'*R2, i.e. the relative rotation between R1 and R2
   const Matrix3<S> R = tf1.linear().transpose() * tf2.linear();
   Matrix3<S> Q = R.cwiseAbs();
+  //DEBUG
+  std::cout << "tf1.linear() = " << std::endl;
+  std::cout << tf1.linear() << std::endl;
+  std::cout << "tf2.linear() = " << std::endl;
+  std::cout << tf2.linear() << std::endl;
+  std::cout << "  R(1, 1) = " << R(1, 1) << std::endl;
+  std::cout << "  R(2, 1) = " << R(2, 1) << std::endl;
+  std::cout << "R = " << std::endl;
+  std::cout << R << std::endl;
+  //END_DEBUG
 
   // for all 15 possible separating axes:
   //   * see if the axis separates the boxes. if so, return 0.
@@ -869,7 +959,11 @@ int boxBox2(
   // separating axis = u1, u2, u3
   S tmp = pp[0];
   S s2 = std::abs(tmp) - (Q.row(0).dot(B) + A[0]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 954" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -881,7 +975,11 @@ int boxBox2(
 
   tmp = pp[1];
   s2 = std::abs(tmp) - (Q.row(1).dot(B) + A[1]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 970" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -893,7 +991,11 @@ int boxBox2(
 
   tmp = pp[2];
   s2 = std::abs(tmp) - (Q.row(2).dot(B) + A[2]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 986" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -906,7 +1008,11 @@ int boxBox2(
   // separating axis = v1, v2, v3
   tmp = tf2.linear().col(0).dot(p);
   s2 = std::abs(tmp) - (Q.col(0).dot(A) + B[0]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1003" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -918,7 +1024,11 @@ int boxBox2(
 
   tmp = tf2.linear().col(1).dot(p);
   s2 = std::abs(tmp) - (Q.col(1).dot(A) + B[1]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1019" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -930,7 +1040,11 @@ int boxBox2(
 
   tmp = tf2.linear().col(2).dot(p);
   s2 =  std::abs(tmp) - (Q.col(2).dot(A) + B[2]);
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1035" << std::endl;
+ //END_DEBUG
+ return 0; }
   if(s2 > s)
   {
     s = s2;
@@ -950,7 +1064,11 @@ int boxBox2(
   // separating axis = u1 x (v1,v2,v3)
   tmp = pp[2] * R(1, 0) - pp[1] * R(2, 0);
   s2 = std::abs(tmp) - (A[1] * Q(2, 0) + A[2] * Q(1, 0) + B[1] * Q(0, 2) + B[2] * Q(0, 1));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1059" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(0, -R(2, 0), R(1, 0));
   S l = n.norm();
   if(l > eps)
@@ -968,7 +1086,24 @@ int boxBox2(
 
   tmp = pp[2] * R(1, 1) - pp[1] * R(2, 1);
   s2 = std::abs(tmp) - (A[1] * Q(2, 1) + A[2] * Q(1, 1) + B[0] * Q(0, 2) + B[2] * Q(0, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1081 -- s2 = " << s2 << std::endl;
+ std::cout << "  tmp = " << tmp << std::endl;
+ std::cout << "  pp[1] = " << pp[1] << std::endl;
+ std::cout << "  pp[2] = " << pp[2] << std::endl;
+ std::cout << "  R(1, 1) = " << R(1, 1) << std::endl;
+ std::cout << "  R(2, 1) = " << R(2, 1) << std::endl;
+ //std::cout << "  A[1] = " << A[1] << std::endl;
+ //std::cout << "  A[2] = " << A[2] << std::endl;
+ //std::cout << "  B[0] = " << B[0] << std::endl;
+ //std::cout << "  B[1] = " << B[1] << std::endl;
+ //std::cout << "  Q(0, 0) = " << Q(0, 0) << std::endl;
+ //std::cout << "  Q(0, 2) = " << Q(0, 2) << std::endl;
+ //std::cout << "  Q(1, 1) = " << Q(1, 1) << std::endl;
+ //std::cout << "  Q(2, 1) = " << Q(2, 1) << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(0, -R(2, 1), R(1, 1));
   l = n.norm();
   if(l > eps)
@@ -986,7 +1121,11 @@ int boxBox2(
 
   tmp = pp[2] * R(1, 2) - pp[1] * R(2, 2);
   s2 = std::abs(tmp) - (A[1] * Q(2, 2) + A[2] * Q(1, 2) + B[0] * Q(0, 1) + B[1] * Q(0, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1103 -- s2 = " << s2 << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(0, -R(2, 2), R(1, 2));
   l = n.norm();
   if(l > eps)
@@ -1005,7 +1144,11 @@ int boxBox2(
   // separating axis = u2 x (v1,v2,v3)
   tmp = pp[0] * R(2, 0) - pp[2] * R(0, 0);
   s2 = std::abs(tmp) - (A[0] * Q(2, 0) + A[2] * Q(0, 0) + B[1] * Q(1, 2) + B[2] * Q(1, 1));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1126" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(R(2, 0), 0, -R(0, 0));
   l = n.norm();
   if(l > eps)
@@ -1023,7 +1166,11 @@ int boxBox2(
 
   tmp = pp[0] * R(2, 1) - pp[2] * R(0, 1);
   s2 = std::abs(tmp) - (A[0] * Q(2, 1) + A[2] * Q(0, 1) + B[0] * Q(1, 2) + B[2] * Q(1, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1148" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(R(2, 1), 0, -R(0, 1));
   l = n.norm();
   if(l > eps)
@@ -1041,7 +1188,11 @@ int boxBox2(
 
   tmp = pp[0] * R(2, 2) - pp[2] * R(0, 2);
   s2 = std::abs(tmp) - (A[0] * Q(2, 2) + A[2] * Q(0, 2) + B[0] * Q(1, 1) + B[1] * Q(1, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1170" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(R(2, 2), 0, -R(0, 2));
   l = n.norm();
   if(l > eps)
@@ -1060,7 +1211,11 @@ int boxBox2(
   // separating axis = u3 x (v1,v2,v3)
   tmp = pp[1] * R(0, 0) - pp[0] * R(1, 0);
   s2 = std::abs(tmp) - (A[0] * Q(1, 0) + A[1] * Q(0, 0) + B[1] * Q(2, 2) + B[2] * Q(2, 1));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1193" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(-R(1, 0), R(0, 0), 0);
   l = n.norm();
   if(l > eps)
@@ -1078,7 +1233,11 @@ int boxBox2(
 
   tmp = pp[1] * R(0, 1) - pp[0] * R(1, 1);
   s2 = std::abs(tmp) - (A[0] * Q(1, 1) + A[1] * Q(0, 1) + B[0] * Q(2, 2) + B[2] * Q(2, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1215" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(-R(1, 1), R(0, 1), 0);
   l = n.norm();
   if(l > eps)
@@ -1096,7 +1255,11 @@ int boxBox2(
 
   tmp = pp[1] * R(0, 2) - pp[0] * R(1, 2);
   s2 = std::abs(tmp) - (A[0] * Q(1, 2) + A[1] * Q(0, 2) + B[0] * Q(2, 1) + B[1] * Q(2, 0));
-  if(s2 > 0) { *return_code = 0; return 0; }
+  if(s2 > 0) { *return_code = 0;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1237" << std::endl;
+ //END_DEBUG
+ return 0; }
   n = Vector3<S>(-R(1, 2), R(0, 2), 0);
   l = n.norm();
   if(l > eps)
@@ -1114,7 +1277,11 @@ int boxBox2(
 
 
 
-  if (!code) { *return_code = code; return 0; }
+  if (!code) { *return_code = code;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1259" << std::endl;
+ //END_DEBUG
+ return 0; }
 
   // if we get to this point, the boxes interpenetrate. compute the normal
   // in global coordinates.
@@ -1166,6 +1333,10 @@ int boxBox2(
     contacts.emplace_back(normal, pb, -*depth);
     *return_code = code;
 
+
+    //DEBUG
+    std::cout << "box_box-inl.h: 1315" << std::endl;
+    //END_DEBUG
     return 1;
   }
 
@@ -1303,7 +1474,11 @@ int boxBox2(
   // intersect the incident and reference faces
   S ret[16];
   int n_intersect = intersectRectQuad2(rect, quad, ret);
-  if(n_intersect < 1) { *return_code = code; return 0; } // this should never happen
+  if(n_intersect < 1) { *return_code = code;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1456" << std::endl;
+ //END_DEBUG
+ return 0; } // this should never happen
 
   // convert the intersection points into reference-face coordinates,
   // and compute the contact position and depth for each point. only keep
@@ -1330,7 +1505,11 @@ int boxBox2(
       cnum++;
     }
   }
-  if(cnum < 1) { *return_code = code; return 0; } // this should never happen
+  if(cnum < 1) { *return_code = code;
+ //DEBUG
+ std::cout << "box_box-inl.h: 1487" << std::endl;
+ //END_DEBUG
+ return 0; } // this should never happen
 
   // we can't generate more contacts than we actually have
   if(maxc > cnum) maxc = cnum;
@@ -1387,6 +1566,10 @@ int boxBox2(
   }
 
   *return_code = code;
+
+  //DEBUG
+  std::cout << "box_box-inl.h: 1548" << std::endl;
+  //END_DEBUG
   return cnum;
 }
 
