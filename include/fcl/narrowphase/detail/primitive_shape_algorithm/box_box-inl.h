@@ -846,7 +846,10 @@ int boxBox2(
   const Vector3<S> B = side2 * 0.5;
 
   // Rij is R1'*R2, i.e. the relative rotation between R1 and R2
-  const Matrix3<S> R = tf1.linear().transpose() * tf2.linear();
+  const Eigen::Transform<S,3,Eigen::Isometry> X1{tf1.linear()};
+  const Eigen::Transform<S,3,Eigen::Isometry> X2{tf2.linear()};
+  const Eigen::Transform<S,3,Eigen::Isometry> X{X1.inverse()*X2};
+  const Matrix3<S> R{X.rotation()};
   Matrix3<S> Q = R.cwiseAbs();
 
   // for all 15 possible separating axes:
