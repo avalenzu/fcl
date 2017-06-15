@@ -101,6 +101,31 @@ void test_sphere_shape()
   EXPECT_NEAR(volume, s.computeVolume(), tolerance<S>());
 }
 
+GTEST_TEST(FCL_GEOMETRIC_SHAPES, IntersectingBoxes) {
+  std::shared_ptr<fcl::CollisionGeometryd> geom1{new fcl::Boxd(Vector3d(10, 10, 1))};
+  std::shared_ptr<fcl::CollisionGeometryd> geom2{new fcl::Boxd(Vector3d(1, 1, 1))};
+  fcl::CollisionObjectd box1{geom1};
+  fcl::CollisionObjectd box2{geom2};
+
+  std::default_random_engine generator;
+  fcl::Transform3d tf1{fcl::Transform3d::Identity()};
+  fcl::Transform3d tf2{fcl::Transform3d::Identity()};
+  Eigen::Matrix3d R; 
+  R << 0.824176,   0.435937,  -0.361516, 0.00594182,  -0.644965,  -0.764189, -0.566303,   0.627678,  -0.534155;
+  tf2.rotate(R);
+  tf2.translation() = Vector3d(1, 1, 0.5);
+
+  box1.setTransform(tf1);
+  box2.setTransform(tf2);
+
+  fcl::CollisionRequestd request;
+  request.enable_contact = true;
+  fcl::CollisionResultd result;
+  fcl::collide(&box1, &box2, request, result);
+
+  EXPECT_TRUE(result.numContacts() > 0);
+}
+
 GTEST_TEST(FCL_GEOMETRIC_SHAPES, sphere_shape)
 {
 //  test_sphere_shape<float>();
