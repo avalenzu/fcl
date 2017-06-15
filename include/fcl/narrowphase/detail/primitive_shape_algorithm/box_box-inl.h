@@ -935,8 +935,8 @@ int boxBox2(
   std::cout << tf2.linear() << std::endl;
   std::cout << "  R(1, 1) = " << R(1, 1) << std::endl;
   std::cout << "  R(2, 1) = " << R(2, 1) << std::endl;
-  std::cout << "R = " << std::endl;
-  std::cout << R << std::endl;
+  //std::cout << "R = " << std::endl;
+  //std::cout << R << std::endl;
   //END_DEBUG
 
   // for all 15 possible separating axes:
