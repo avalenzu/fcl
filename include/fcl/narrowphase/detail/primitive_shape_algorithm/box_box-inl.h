@@ -847,7 +847,7 @@ int boxBox2(
 
   // Rij is R1'*R2, i.e. the relative rotation between R1 and R2
   const Matrix3<S> R = tf1.linear().transpose() * tf2.linear();
-  Matrix3<S> Q = R.cwiseAbs();
+  Matrix3<S> Q = (tf1.linear().transpose() * tf2.linear()).cwiseAbs();
 
   // for all 15 possible separating axes:
   //   * see if the axis separates the boxes. if so, return 0.
