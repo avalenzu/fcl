@@ -20,7 +20,6 @@ matrix:
       compiler: clang
       env: BUILD_TYPE=Release COVERALLS=OFF
     - os: linux
-      compiler: clang
       addons:
         apt:
           sources:
