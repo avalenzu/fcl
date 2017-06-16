@@ -37,6 +37,9 @@ matrix:
       compiler: clang
       env: BUILD_TYPE=Release COVERALLS=OFF
 
+before_install:
+  - eval "${MATRIX_EVAL}"
+
 install:
   # Install dependencies for FCL
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then 'ci/install_linux.sh' ; fi
