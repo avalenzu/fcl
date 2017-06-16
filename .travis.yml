@@ -19,6 +19,13 @@ matrix:
     - os: linux
       compiler: clang
       env: BUILD_TYPE=Release COVERALLS=OFF
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['llvm-toolchain-trusty-3.9']
+          packages: ['clang-3.9']
+      env: COMPILER=clang++-3.9 BUILD_TYPE=Release COVERALLS=OFF
     - os: osx
       osx_image: xcode7.3
       compiler: clang
