@@ -23,16 +23,12 @@ matrix:
       compiler: clang
       addons:
         apt:
-          sources: ['llvm-toolchain-trusty-3.9']
-          packages: ['clang-3.9']
-      env: COMPILER=clang++-3.9 BUILD_TYPE=Debug COVERALLS=OFF
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources: ['llvm-toolchain-trusty-3.9']
-          packages: ['clang-3.9']
-      env: COMPILER=clang++-3.9 BUILD_TYPE=Release COVERALLS=OFF
+          sources:
+            - 'llvm-toolchain-trusty-3.9'
+          packages:
+            - 'clang-3.9'
+      env: 
+        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
     - os: osx
       osx_image: xcode7.3
       compiler: clang
