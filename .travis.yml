@@ -8,18 +8,6 @@ language: cpp
 matrix:
   include:
     - os: linux
-      compiler: gcc
-      env: BUILD_TYPE=Debug COVERALLS=ON
-    - os: linux
-      compiler: gcc
-      env: BUILD_TYPE=Release COVERALLS=OFF
-    - os: linux
-      compiler: clang
-      env: BUILD_TYPE=Debug COVERALLS=OFF
-    - os: linux
-      compiler: clang
-      env: BUILD_TYPE=Release COVERALLS=OFF
-    - os: linux
       addons:
         apt:
           sources:
@@ -28,17 +16,11 @@ matrix:
             - 'clang-3.9'
       env: 
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
-    - os: osx
-      osx_image: xcode7.3
-      compiler: clang
-      env: BUILD_TYPE=Debug COVERALLS=OFF
-    - os: osx
-      osx_image: xcode7.3
-      compiler: clang
-      env: BUILD_TYPE=Release COVERALLS=OFF
+        - BUILD_TYPE=Release
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - eval "$CXX --version"
 
 install:
   # Install dependencies for FCL
