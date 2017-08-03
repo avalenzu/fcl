@@ -40,6 +40,7 @@
 
 #include "fcl/common/types.h"
 #include "fcl/geometry/shape/capsule.h"
+#include "fcl/narrowphase/contact_point.h"
 
 namespace fcl
 {

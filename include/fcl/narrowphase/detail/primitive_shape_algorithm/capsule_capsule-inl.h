@@ -148,16 +148,17 @@ bool capsuleCapsuleDistance(const Capsule<S>& s1, const Transform3<S>& tf1,
           S* dist, Vector3<S>* p1_res, Vector3<S>* p2_res)
 {
 
-  Vector3<S> p1(tf1.translation());
-  Vector3<S> p2(tf2.translation());
+  // Each capsule is defined by a line segment that lies on its local frame's
+  // z-axis and is centered at its origin.
+  Vector3<S> p1 =
+      (tf1 * Translation3<S>(Vector3<S>(0, 0, -0.5*s1.lz))).translation();
+  Vector3<S> q1 =
+      (tf1 * Translation3<S>(Vector3<S>(0, 0, 0.5*s1.lz))).translation();
 
-  // line segment composes two points. First point is given by the origin, second point is computed by the origin transformed along z.
-  // extension along z-axis means transformation with identity matrix and translation vector z pos
-  Transform3<S> transformQ1 = tf1 * Translation3<S>(Vector3<S>(0,0,s1.lz));
-  Vector3<S> q1 = transformQ1.translation();
-
-  Transform3<S> transformQ2 = tf2 * Translation3<S>(Vector3<S>(0,0,s2.lz));
-  Vector3<S> q2 = transformQ2.translation();
+  Vector3<S> p2 =
+      (tf2 * Translation3<S>(Vector3<S>(0, 0, -0.5*s2.lz))).translation();
+  Vector3<S> q2 =
+      (tf2 * Translation3<S>(Vector3<S>(0, 0, 0.5*s2.lz))).translation();
 
   // s and t correspont to the length of the line segment
   S s, t;
@@ -179,6 +180,26 @@ bool capsuleCapsuleDistance(const Capsule<S>& s1, const Transform3<S>& tf1,
 
   *p2_res = c2 + distVec*s2.radius;
 
+  return true;
+}
+
+template <typename S>
+bool capsuleCapsuleIntersect(const Capsule<S>& s1, const Transform3<S>& tf1,
+                            const Capsule<S>& s2, const Transform3<S>& tf2,
+                            std::vector<ContactPoint<S>>* contacts)
+{
+  Vector3<S> p1, p2;
+  S distance;
+  detail::capsuleCapsuleDistance(s1, tf1, s2, tf2, &distance, &p1, &p2);
+  if (distance > 0) {
+    return false;
+  }
+  if (contacts) {
+    const Vector3<S> point{0.5*(p1 + p2)};
+    const S penetration_depth = -distance;
+    const Vector3<S> normal{-(p2-p1).normalized()};
+    contacts->emplace_back(normal, point, penetration_depth);
+  }
   return true;
 }
 
