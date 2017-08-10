@@ -49,19 +49,16 @@ class Convex<double>;
 
 //==============================================================================
 template <typename S>
-Convex<S>::Convex(
-    Vector3<S>* plane_normals, S* plane_dis, int num_planes_,
-    Vector3<S>* points, int num_points_, int* polygons_)
-  : ShapeBase<S>()
-{
-  plane_normals = plane_normals;
-  plane_dis = plane_dis;
-  num_planes = num_planes_;
-  points = points;
-  num_points = num_points_;
-  polygons = polygons_;
-  edges = nullptr;
-
+Convex<S>::Convex(Vector3<S>* plane_normals, S* plane_dis, int num_planes_,
+                  Vector3<S>* points, int num_points_, int* polygons_)
+    : ShapeBase<S>(),
+      plane_normals(plane_normals),
+      plane_dis(plane_dis),
+      num_planes(num_planes_),
+      points(points),
+      num_points(num_points_),
+      polygons(polygons_),
+      edges(nullptr) {
   Vector3<S> sum = Vector3<S>::Zero();
   for(int i = 0; i < num_points; ++i)
   {
